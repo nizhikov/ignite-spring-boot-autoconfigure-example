@@ -23,22 +23,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+/** Example component. */
 @Component
 public class ServiceWithIgniteClient implements CommandLineRunner {
+    /** IgniteClient instance autoconfigured and injected. */
     @Autowired
     private IgniteClient client;
 
+    /** This method executed after startup. */
     @Override public void run(String... args) throws Exception {
-        System.out.println("ServiceWithIgniteClient.run - " + client);
+        System.out.println("ServiceWithIgniteClient.run");
+        System.out.println("Cache names existing in cluster: " + client.cacheNames());
 
-        ClientCache<Integer, Integer> cache = client.createCache("my-cache");
+        ClientCache<Integer, Integer> cache = client.cache("my-cache1");
 
-        System.out.println("Putting data to the cache...");
+        System.out.println("Putting data to the my-cache1...");
 
         cache.put(1, 1);
         cache.put(2, 2);
         cache.put(3, 3);
 
-        System.out.println("Done putting data to the cache...");
+        System.out.println("Done putting data to the my-cache1...");
     }
 }

@@ -17,20 +17,33 @@
 
 package org.apache.ignite.spring.boot.configfrombean;
 
-import org.apache.ignite.configuration.IgniteConfiguration;
+import org.apache.ignite.spi.communication.tcp.TcpCommunicationSpi;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.ignite.IgniteClientAutoConfiguration;
+import org.springframework.boot.autoconfigure.ignite.IgniteConfigurer;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
-@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
-public class AutoConfigureFromBeanExample {
+/** Example of Ignite node autoconfigurer. */
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, IgniteClientAutoConfiguration.class})
+public class AutoConfigureExample {
+    /** Main method of the application. */
     public static void main(String[] args) {
-        SpringApplication.run(AutoConfigureFromBeanExample.class, args);
+        //Activating `node` profile to get properties from application-node.yml
+        System.setProperty("spring.profiles.active", "node");
+
+        SpringApplication.run(AutoConfigureExample.class, args);
     }
 
+    /** Providing configurer for the Ignite. */
     @Bean
-    public IgniteConfiguration config() {
-        return new IgniteConfiguration().setIgniteInstanceName("config-from-bean-example");
+    public IgniteConfigurer configurer() {
+        return cfg -> {
+            //Setting consistent id.
+            //See `application-node.yml` for the additional properties.
+            cfg.setConsistentId("consistent-id");
+            cfg.setCommunicationSpi(new TcpCommunicationSpi());
+        };
     }
 }

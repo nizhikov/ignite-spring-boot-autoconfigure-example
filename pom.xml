@@ -34,7 +34,8 @@
     <properties>
         <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
         <ignite.version>2.9.0-SNAPSHOT</ignite.version>
-        <assembly.file.name>${project.artifactId}-bin-${project.version}</assembly.file.name>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -58,7 +59,13 @@
 
         <dependency>
             <groupId>org.apache.ignite</groupId>
-            <artifactId>ignite-spring-boot-autoconfigure</artifactId>
+            <artifactId>spring-boot-ignite-autoconfigure</artifactId>
+            <version>${ignite.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.ignite</groupId>
+            <artifactId>spring-boot-ignite-client-autoconfigure</artifactId>
             <version>${ignite.version}</version>
         </dependency>
 
@@ -69,45 +76,4 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-    <profiles>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/assembly/bin.xml</descriptor>
-                            </descriptors>
-                            <finalName>${assembly.file.name}</finalName>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

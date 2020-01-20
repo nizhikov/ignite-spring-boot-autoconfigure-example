@@ -17,21 +17,39 @@
 
 package org.apache.ignite.spring.boot.thinclientfromconfig;
 
+import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.ignite.IgniteClientConfigurer;
+import org.springframework.boot.autoconfigure.ignite.IgniteNodeAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.annotation.Bean;
 
-@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
-public class AutoConfigureClientFromConfigExample {
+/** Example of Ignite client autoconfigurer. */
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, IgniteNodeAutoConfiguration.class})
+public class AutoConfigureClientExample {
+    /** Main method of the application. */
     public static void main(String[] args) {
-        System.out.println("Starting Ignite server node outside of Spring Boot application...");
-        Ignition.start(new IgniteConfiguration());
-        System.out.println("Ignite server node started...");
+        //Starting Ignite server node outside of Spring Boot application so client can connect to it.
+        Ignite serverNode = Ignition.start(new IgniteConfiguration());
 
+        //Creating caches.
+        serverNode.createCache("my-cache1");
+        serverNode.createCache("my-cache2");
+
+        //Activating `thinclient` profile to get properties from application-thinclient.yml
         System.setProperty("spring.profiles.active", "thinclient");
 
-        SpringApplication.run(AutoConfigureClientFromConfigExample.class);
+        SpringApplication.run(AutoConfigureClientExample.class);
+    }
+
+    /** Providing configurer for the Ignite client. */
+    @Bean
+    IgniteClientConfigurer configurer() {
+        //Setting some property.
+        //Other will come from `application-thinclient.yml`
+        return cfg -> cfg.setSendBufferSize(64*1024);
     }
 }

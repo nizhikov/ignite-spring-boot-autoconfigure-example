@@ -17,8 +17,11 @@
 
 package org.apache.ignite.spring.boot.configfrombean;
 
+import java.util.Date;
+import java.util.List;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.IgniteCache;
+import org.apache.ignite.cache.query.SqlFieldsQuery;
 import org.apache.ignite.configuration.DataRegionConfiguration;
 import org.apache.ignite.spi.communication.tcp.TcpCommunicationSpi;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +37,6 @@ public class ServiceWithIgniteFromBean implements CommandLineRunner {
 
     /** This method executed after startup. */
     @Override public void run(String... args) throws Exception {
-        IgniteCache<Integer, Integer> cache = ignite.createCache("my-cache1");
-
         System.out.println("ServiceWithIgnite.run:");
         //This property comes from configurer. See AutoConfigureExample.
         System.out.println("    IgniteConsistentId: " + ignite.configuration().getConsistentId());
@@ -51,6 +52,34 @@ public class ServiceWithIgniteFromBean implements CommandLineRunner {
             ignite.configuration().getDataStorageConfiguration().getDataRegionConfigurations()[0];
 
         System.out.println("    " + drc.getName() + " initial size: " + drc.getInitialSize());
+        System.out.println("    Cache in cluster:");
+
+        for (String cacheName : ignite.cacheNames())
+            System.out.println("        " + cacheName);
+
+        cacheAPI();
+        sqlAPI();
+    }
+
+    private void sqlAPI() {
+        IgniteCache<Long, Account> accounts = ignite.cache("accounts");
+
+        String qry = "INSERT INTO ACCOUNTS(ID, AMOUNT, UPDATEDATE) VALUES(?, ?, ?)";
+
+        accounts.query(new SqlFieldsQuery(qry).setArgs(1, 250.05, new Date())).getAll();
+        accounts.query(new SqlFieldsQuery(qry).setArgs(2, 255.05, new Date())).getAll();
+        accounts.query(new SqlFieldsQuery(qry).setArgs(3, .05, new Date())).getAll();
+
+        qry = "SELECT * FROM ACCOUNTS";
+
+        List<List<?>> res = accounts.query(new SqlFieldsQuery(qry)).getAll();
+
+        for (List<?> row : res)
+            System.out.println("(" + row.get(0) + ", " + row.get(1) + ", " + row.get(2) + ")");
+    }
+
+    private void cacheAPI() {
+        IgniteCache<Integer, Integer> cache = ignite.cache("my-cache2");
 
         System.out.println("Putting data to the my-cache1...");
 

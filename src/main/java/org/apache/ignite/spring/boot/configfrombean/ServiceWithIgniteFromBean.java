@@ -62,7 +62,7 @@ public class ServiceWithIgniteFromBean implements CommandLineRunner {
     }
 
     private void sqlAPI() {
-        IgniteCache<Long, Account> accounts = ignite.cache("accounts");
+        IgniteCache<Long, Object> accounts = ignite.cache("accounts");
 
         String qry = "INSERT INTO ACCOUNTS(ID, AMOUNT, UPDATEDATE) VALUES(?, ?, ?)";
 

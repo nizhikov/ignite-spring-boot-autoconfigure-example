@@ -20,15 +20,15 @@ package org.apache.ignite.spring.boot.thinclientfromconfig;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
 import org.apache.ignite.configuration.IgniteConfiguration;
+import org.apache.ignite.springframework.boot.autoconfigure.IgniteAutoConfiguration;
+import org.apache.ignite.springframework.boot.autoconfigure.IgniteClientConfigurer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.ignite.IgniteClientConfigurer;
-import org.springframework.boot.autoconfigure.ignite.IgniteNodeAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
 /** Example of Ignite client autoconfigurer. */
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, IgniteNodeAutoConfiguration.class})
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, IgniteAutoConfiguration.class})
 public class AutoConfigureClientExample {
     /** Main method of the application. */
     public static void main(String[] args) {

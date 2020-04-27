@@ -18,10 +18,10 @@
 package org.apache.ignite.spring.boot.configfrombean;
 
 import org.apache.ignite.spi.communication.tcp.TcpCommunicationSpi;
+import org.apache.ignite.springframework.boot.autoconfigure.IgniteClientAutoConfiguration;
+import org.apache.ignite.springframework.boot.autoconfigure.IgniteConfigurer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.ignite.IgniteClientAutoConfiguration;
-import org.springframework.boot.autoconfigure.ignite.IgniteConfigurer;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
